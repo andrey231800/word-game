@@ -6,13 +6,8 @@ import { gsap as gsapLibrary } from "gsap";
 import { PixiPlugin } from 'gsap/PixiPlugin';
 import { Text } from 'pixi.js';
 import Timeline = gsap.core.Timeline;
-
-interface IColors {
-   incorrect: number,
-   correct: number,
-   default: number,
-   repeat: number
-}
+import { updatePivot } from '../../utils/updatePivot';
+import { IColors } from '../../interfaces/Color';
 
 export class LettersPreview extends PIXI.Container {
 
@@ -90,24 +85,7 @@ export class LettersPreview extends PIXI.Container {
 
         }
 
-        this.updatePivot();
-
-    }
-
-    updatePivot() {
-        let minX = Infinity;
-        let maxX = -Infinity;
-
-        this.children.forEach(child => {
-            if (child.x < minX) {
-                minX = child.x;
-            }
-            if (child.x > maxX) {
-                maxX = child.x;
-            }
-        });
-
-        this.pivot.x = (minX + maxX) / 2;
+        updatePivot(this);
     }
 
     correct() {

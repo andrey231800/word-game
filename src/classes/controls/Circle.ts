@@ -3,6 +3,7 @@ import { Application, Container, Loader, Sprite, Spritesheet, Texture } from 'pi
 import { Letter } from './Letter';
 import { getLevelFromJSON } from '../../utils/getLevelFromJSON';
 import { Move } from './Move';
+import { Words } from '../words/Words';
 
 interface WordsObject {
     words: string[];
@@ -14,7 +15,8 @@ export class Circle extends Container {
     levelWords: string[];
     lettersVariants: string[];
     level: number;
-    move: Move | null
+    move: Move | null;
+    WordsContainer: Words | null;
 
     constructor(app: Application, level: number = 1) {
         super();
@@ -22,6 +24,8 @@ export class Circle extends Container {
         this.app = app;
         this.letters = new Container();
         // this.update = this.update.bind(this);
+
+        this.WordsContainer = null;
 
         this.levelWords = ['привет'];
 
@@ -40,7 +44,7 @@ export class Circle extends Container {
 
         this.getLevel();
 
-        this.y = 200;
+        this.y = 300;
 
         // this.createLetters();
 
@@ -142,7 +146,9 @@ export class Circle extends Container {
 
     private build() {
 
-        this.move = new Move(this.app, this.letters, this.levelWords);
+        this.WordsContainer = new Words(this.app, this.levelWords);
+
+        this.move = new Move(this.app, this.letters, this.levelWords, this.WordsContainer);
 
         this.pickLettersFromTheWords();
         this.createLetters();

@@ -6,6 +6,7 @@ import { getDistance } from '../../utils/getDistance';
 import { Graphics } from 'pixi.js';
 import { LettersPreview } from './LettersPreview';
 import { gsap } from "gsap";
+import { Words } from '../words/Words';
 
 export class Move {
 
@@ -21,14 +22,17 @@ export class Move {
     pickedLetters: Letter[];
     lettersPreview: LettersPreview;
     correctWords: string[];
-    collectedWords: string[]
+    collectedWords: string[];
+    WordsContainer: Words | null;
 
-    constructor(app: PIXI.Application, letters: PIXI.Container, correctWords: string[]) {
+    constructor(app: PIXI.Application, letters: PIXI.Container, correctWords: string[], WordsContainer: Words | null) {
 
         this.app = app;
 
         this.dragging = false;
         this.dragData = null;
+
+        this.WordsContainer = WordsContainer;
 
         this.letters = letters;
 
@@ -224,8 +228,13 @@ export class Move {
             if(this.collectedWords.indexOf(pickedWord) === -1) {
                 this.collectedWords.push(pickedWord);
                 this.lettersPreview.correct();
+
+                if(this.WordsContainer) this.WordsContainer.correct(pickedWord);
+
             } else {
                 this.lettersPreview.correctRepeat();
+
+                if(this.WordsContainer) this.WordsContainer.repeat(pickedWord);
             }
 
         } else {
