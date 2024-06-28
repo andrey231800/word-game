@@ -196,7 +196,7 @@ export class Main {
     }
 
     private loadFont() {
-        this.addFontFace('Vag-World', 'assets/fonts/Vag-World.ttf');
+        this.addFontFace('Vag-World', 'assets/fonts/Vag-World.woff2');
 
         const ff = new FontFaceObserver('Vag-World');
         ff.load().then(function () {

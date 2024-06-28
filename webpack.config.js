@@ -8,6 +8,7 @@ module.exports = {
     entry: './src/index.ts',
     // Necessary in order to use source maps and debug directly TypeScript files
     devtool: 'source-map',
+    mode: 'production',
     module: {
         rules: [
             // Necessary in order to use TypeScript
@@ -22,6 +23,11 @@ module.exports = {
         // Alway keep '.js' even though you don't use it.
         // https://github.com/webpack/webpack-dev-server/issues/720#issuecomment-268470989
         extensions: ['.ts', '.js'],
+    },
+    performance: {
+        hints: false,
+        maxEntrypointSize: 512000,
+        maxAssetSize: 512000
     },
     output: {
         filename: 'bundle.js',
