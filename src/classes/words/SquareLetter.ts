@@ -47,7 +47,7 @@ export class SquareLetter extends PIXI.Container {
 
         this.textCon = new PIXI.Text(this.textContent, {
             fontFamily: 'Vag-World',
-            fontSize: "45px",
+            fontSize: "40px",
             fill: this.color.correct
         })
         this.textCon.anchor.set(0.5);

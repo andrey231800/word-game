@@ -181,7 +181,22 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">circle-frame.png</key>
+            <key type="filename">../../../Images/bt_green.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0,0</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>83,24,165,47</rect>
+                <key>scale9Paddings</key>
+                <rect>83,24,165,47</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../../../Images/circle-frame.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0,0</point_f>
@@ -196,8 +211,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">green-rect.png</key>
-            <key type="filename">white-rect.png</key>
+            <key type="filename">../../../Images/green-rect.png</key>
+            <key type="filename">../../../Images/white-rect.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0,0</point_f>
@@ -212,8 +227,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">pink-circle.png</key>
-            <key type="filename">white-circle.png</key>
+            <key type="filename">../../../Images/pink-circle.png</key>
+            <key type="filename">../../../Images/white-circle.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0,0</point_f>
@@ -225,17 +240,58 @@
                 <rect>23,24,45,47</rect>
                 <key>scale9Paddings</key>
                 <rect>23,24,45,47</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../../../Images/popup-rect.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0,0</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>133,107,265,214</rect>
+                <key>scale9Paddings</key>
+                <rect>133,107,265,214</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../../../Images/popup_ribbon.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0,0</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>96,28,192,57</rect>
+                <key>scale9Paddings</key>
+                <rect>96,28,192,57</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">../../../Images/update_button.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0,0</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>77,22,153,44</rect>
+                <key>scale9Paddings</key>
+                <rect>77,22,153,44</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
         </map>
         <key>fileList</key>
         <array>
-            <filename>circle-frame.png</filename>
-            <filename>green-rect.png</filename>
-            <filename>pink-circle.png</filename>
-            <filename>white-circle.png</filename>
-            <filename>white-rect.png</filename>
+            <filename>../../../Images</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

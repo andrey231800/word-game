@@ -11,20 +11,22 @@ import { IColors } from '../../interfaces/Color';
 
 export class LettersPreview extends PIXI.Container {
 
-    app: PIXI.Application;
+    // app: PIXI.Application;
     pickedLetters: Letter[];
     move: Move;
     color: IColors;
     animation: Timeline | null;
+    WRAPPER: PIXI.Container;
 
-    constructor(app: PIXI.Application, move: Move) {
+    constructor(WRAPPER: PIXI.Container, move: Move) {
         super();
 
-        this.app = app;
+        // this.app = app;
+        this.WRAPPER = WRAPPER
 
         this.animation = null;
 
-        const circle = this.app.stage.getChildAt(0);
+        const circle = this.WRAPPER.getChildAt(0);
 
         if(circle instanceof PIXI.Container) circle.addChild(this);
 
@@ -59,7 +61,7 @@ export class LettersPreview extends PIXI.Container {
 
         const letterText = new PIXI.Text(textContent, {
             fontFamily: 'Vag-World',
-            fontSize: "55px",
+            fontSize: "50px",
             fill: this.color.default
         });
         letterText.anchor.set(0.5);
@@ -89,8 +91,6 @@ export class LettersPreview extends PIXI.Container {
     }
 
     correct() {
-
-        console.log('correct');
 
         this.clearLetters();
 

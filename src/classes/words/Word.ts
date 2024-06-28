@@ -2,17 +2,18 @@ import * as PIXI from 'pixi.js'
 import { SquareLetter } from './SquareLetter';
 import { updatePivot } from '../../utils/updatePivot';
 import { Container } from 'pixi.js';
+import { GAME_STATE } from '../../Main';
 
 export class Word extends PIXI.Container {
 
-    app: PIXI.Application;
+    // app: PIXI.Application;
     step: number;
     textContent: string
 
-    constructor(app: PIXI.Application, textContent: string, wrapper: PIXI.Container) {
+    constructor(textContent: string, wrapper: PIXI.Container) {
         super();
 
-        this.app = app;
+        // this.app = app;
 
         wrapper.addChild(this);
 
@@ -62,6 +63,21 @@ export class Word extends PIXI.Container {
             if(letter instanceof SquareLetter) {
 
                 letter.repeatAnim();
+            }
+
+        }
+    }
+
+    showLettersStatic() {
+        for (let i = 0; i < this.children.length; i++) {
+
+            const letter = this.getChildAt(i);
+
+            if(letter instanceof SquareLetter) {
+                if(letter.greenSquare) {
+                    letter.greenSquare.alpha = 1;
+                }
+
             }
 
         }

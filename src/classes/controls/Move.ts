@@ -7,6 +7,9 @@ import { Graphics } from 'pixi.js';
 import { LettersPreview } from './LettersPreview';
 import { gsap } from "gsap";
 import { Words } from '../words/Words';
+import { Circle } from './Circle';
+import { IMove } from '../../interfaces/IMove';
+import { GAME_STATE } from '../../Main';
 
 export class Move {
 
@@ -24,33 +27,49 @@ export class Move {
     correctWords: string[];
     collectedWords: string[];
     WordsContainer: Words | null;
+    WRAPPER: PIXI.Container;
+    Circle: Circle;
 
-    constructor(app: PIXI.Application, letters: PIXI.Container, correctWords: string[], WordsContainer: Words | null) {
+    constructor(options: IMove) {
 
-        this.app = app;
+
+        this.app = options.app;
+
+        this.WRAPPER = options.WRAPPER;
 
         this.dragging = false;
         this.dragData = null;
 
-        this.WordsContainer = WordsContainer;
+        this.Circle = options.Circle;
 
-        this.letters = letters;
+        this.WordsContainer = options.WordsContainer;
+
+        this.letters = options.letters;
 
         this.line = null;
         this.curLetter = null;
         this.prevLetter = null;
 
-        this.correctWords = correctWords;
+        this.correctWords = options.correctWords;
 
         this.startPoint = null;
 
         this.linesCon = new PIXI.Container;
-        this.app.stage.addChild(this.linesCon);
+        this.Circle.addChild(this.linesCon);
+        this.linesCon.name = 'lines con';
 
         this.pickedLetters = [];
+
         this.collectedWords = [];
 
-        this.lettersPreview = new LettersPreview(this.app, this);
+        if(GAME_STATE.words.length) {
+            this.collectedWords = [...GAME_STATE.words];
+            // GAME_STATE.words = [];
+        }
+
+        // console.log(this.collectedWords);
+
+        this.lettersPreview = new LettersPreview(this.WRAPPER, this);
 
         this.addEvents();
 
@@ -83,18 +102,21 @@ export class Move {
             }
         });
 
-        // this.app.stage.on('pointerupoutside', () => {
-        //     if(this.dragging) {
-        //         console.log('Drag ended outside');
-        //         this.dragging = false;
-        //         this.dragData = null;
-        //
-        //     }
-        // });
+        this.app.stage.on('pointerupoutside', () => {
+            if(this.dragging) {
+                this.dragging = false;
+                this.dragData = null;
+
+                this.reset();
+
+            }
+        });
     }
 
     createLine() {
         this.line = new PIXI.Graphics();
+
+        this.Circle.addChild(this.linesCon);
 
         this.linesCon.addChild(this.line);
 
@@ -226,8 +248,11 @@ export class Move {
         if(this.correctWords.indexOf(pickedWord) !== -1) {
 
             if(this.collectedWords.indexOf(pickedWord) === -1) {
+
                 this.collectedWords.push(pickedWord);
                 this.lettersPreview.correct();
+
+                GAME_STATE.words.push(pickedWord);
 
                 if(this.WordsContainer) this.WordsContainer.correct(pickedWord);
 

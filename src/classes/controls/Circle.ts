@@ -4,6 +4,8 @@ import { Letter } from './Letter';
 import { getLevelFromJSON } from '../../utils/getLevelFromJSON';
 import { Move } from './Move';
 import { Words } from '../words/Words';
+import { NextLevel } from '../NextLevel';
+import { GAME_STATE } from '../../Main';
 
 interface WordsObject {
     words: string[];
@@ -14,27 +16,36 @@ export class Circle extends Container {
     letters: Container;
     levelWords: string[];
     lettersVariants: string[];
-    level: number;
+    CURRENT_LEVEL: number;
     move: Move | null;
     WordsContainer: Words | null;
+    WRAPPER: PIXI.Container;
+    NextLevel: NextLevel;
 
-    constructor(app: Application, level: number = 1) {
+    constructor(app: Application, NextLevel: NextLevel, level: number = 1) {
         super();
 
         this.app = app;
         this.letters = new Container();
         // this.update = this.update.bind(this);
 
+        this.WRAPPER = new PIXI.Container();
+        this.WRAPPER.addChild(this);
+
+        this.NextLevel = NextLevel;
+
         this.WordsContainer = null;
 
         this.levelWords = ['привет'];
 
-        this.level = level;
+        this.CURRENT_LEVEL = level;
         this.lettersVariants = [];
+
+        GAME_STATE.level = this.CURRENT_LEVEL;
 
         this.move = null;
 
-        this.app.stage.addChild(this);
+        this.app.stage.addChild(this.WRAPPER);
 
         const circleImage = new PIXI.Sprite(PIXI.Texture.from('circle-frame.png'));
         circleImage.anchor.set(0.5);
@@ -132,7 +143,7 @@ export class Circle extends Container {
     async getLevel() {
 
         try {
-            const words= await getLevelFromJSON(this.level);
+            const words= await getLevelFromJSON(this.CURRENT_LEVEL);
 
             this.levelWords = words.words;
 
@@ -146,13 +157,24 @@ export class Circle extends Container {
 
     private build() {
 
-        this.WordsContainer = new Words(this.app, this.levelWords);
+        this.WordsContainer = new Words(this.WRAPPER, this.levelWords, this.CURRENT_LEVEL, this.NextLevel);
 
-        this.move = new Move(this.app, this.letters, this.levelWords, this.WordsContainer);
+        this.move = new Move({
+            WRAPPER: this.WRAPPER,
+            letters: this.letters,
+            correctWords: this.levelWords,
+            WordsContainer: this.WordsContainer,
+            app: this.app,
+            Circle: this
+        });
 
         this.pickLettersFromTheWords();
         this.createLetters();
 
         this.app.stage.addChild(this.move.linesCon);
+
+        if(this.levelWords.length >= 8) {
+            this.y = 377;
+        }
     }
 }
