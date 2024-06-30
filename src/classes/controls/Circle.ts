@@ -174,7 +174,7 @@ export class Circle extends Container {
         this.app.stage.addChild(this.move.linesCon);
 
         if(this.levelWords.length >= 8) {
-            this.y = 377;
+            this.y = 377 + 50;
         }
     }
 }

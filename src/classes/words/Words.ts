@@ -61,12 +61,13 @@ export class Words extends PIXI.Container {
     }
 
     private build() {
+
         this.WRAPPER.addChild(this);
 
         this.y = -423;
 
         if(this.words.length >= 8) {
-            this.y = -558;
+            this.y = -558 + 50;
             this.scale.set(0.85);
         }
 
