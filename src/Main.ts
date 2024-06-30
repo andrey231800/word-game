@@ -146,7 +146,6 @@ export class Main {
 
     private onResize() {
 
-        this.app.renderer.resize(window.innerWidth, window.innerHeight);
 
         this.resizeStage();
 
@@ -155,19 +154,19 @@ export class Main {
 
     private resizeStage() {
 
-        const proportions = window.innerWidth / window.innerHeight;
+        const canvasWidth = window.innerWidth;
+        const canvasHeight = window.innerHeight;
 
-        if(proportions > 1) {
+        const gameWidth = 800;
+        const gameHeight = 1300;
 
-            //Landscape
+        const scaleX = canvasWidth / gameWidth;
+        const scaleY = canvasHeight / gameHeight;
+        const scale = Math.min(scaleX, scaleY);
 
-            this.app.stage.scale.set(0.7);
+        this.app.renderer.resize(window.innerWidth, window.innerHeight);
 
-        } else {
-            //Portrait
-
-            this.app.stage.scale.set(1);
-        }
+        this.app.stage.scale.set(scale, scale);
 
 
     }
