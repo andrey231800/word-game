@@ -19,6 +19,8 @@ export class Main {
     CURRENT_LEVEL: number;
     storageKey: string;
     twoTabs: TwoTabs | null;
+    nextLevel: NextLevel | null;
+    currentCircle: Circle | null;
 
     constructor() {
         this.app = new PIXI.Application({
@@ -36,6 +38,8 @@ export class Main {
 
         this.twoTabs = null;
 
+        this.nextLevel = null;
+        this.currentCircle = null;
 
         this.storageKey = 'page-opened';
 
@@ -50,6 +54,7 @@ export class Main {
         this.setPageOpenStatus(true);
 
         // if(this.checkPageOpenStatus()) {
+        //     console.log(GAME_STATE);
         //     console.log('Страница уже открыта в другой вкладке!');
         // }
 
@@ -84,7 +89,7 @@ export class Main {
 
     private localStorageEvents() {
         window.addEventListener('beforeunload', () => {
-            // console.log('unload');
+            console.log('unload');
 
             localStorage.setItem('gameState', JSON.stringify(GAME_STATE));
 
@@ -99,10 +104,13 @@ export class Main {
 
         window.addEventListener('storage', (event) => {
             if(event.newValue) {
+
                 if (event.key === this.storageKey) {
                     const pageStatus = JSON.parse(event.newValue);
                     if (pageStatus.status) {
                         console.log('Страница открыта в другой вкладке!');
+
+                        localStorage.setItem('gameState', JSON.stringify(GAME_STATE));
 
                         if(this.twoTabs instanceof TwoTabs) {
                             this.twoTabs.show();
@@ -131,7 +139,7 @@ export class Main {
     public setPageOpenStatus(status: boolean) {
         localStorage.setItem(this.storageKey, JSON.stringify({
             status: status,
-            timestamp: new Date().getTime()
+            timestamp: new Date().getTime(),
         }));
     }
 
@@ -157,8 +165,8 @@ export class Main {
         const canvasWidth = window.innerWidth;
         const canvasHeight = window.innerHeight;
 
-        const gameWidth = 500;
-        const gameHeight = 1300;
+        const gameWidth = 300;
+        const gameHeight = 1200;
 
         const scaleX = canvasWidth / gameWidth;
         const scaleY = canvasHeight / gameHeight;
@@ -225,11 +233,22 @@ export class Main {
     buildLayout() {
        // circleControls.WRAPPER.visible = false;
 
-        const nextLevel: NextLevel = new NextLevel(this.app, this.MAX_LEVEL, this.CURRENT_LEVEL);
-        const circleControls = new Circle(this.app, nextLevel, this.CURRENT_LEVEL);
+        this.nextLevel = new NextLevel(this.app, this.MAX_LEVEL, this.CURRENT_LEVEL);
 
-        this.twoTabs = new TwoTabs(this.app, this);
+        this.addLevel();
 
+        this.twoTabs = new TwoTabs(this.app, this, this.nextLevel);
+
+    }
+
+    deleteLevel() {
+        if(this.currentCircle) {
+            this.currentCircle.WRAPPER.destroy();
+        }
+    }
+
+    addLevel() {
+        if(this.nextLevel) this.currentCircle = new Circle(this.app, this.nextLevel, this.CURRENT_LEVEL);
     }
 
     start() {

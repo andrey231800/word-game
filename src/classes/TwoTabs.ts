@@ -2,8 +2,9 @@ import * as PIXI from 'pixi.js';
 import { gsap } from 'gsap';
 import { Texture } from 'pixi.js';
 import { Back } from 'gsap/gsap-core';
-import { Main } from '../Main';
+import { GAME_STATE, Main } from '../Main';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
+import { NextLevel } from './NextLevel';
 
 export class TwoTabs extends PIXI.Container {
 
@@ -14,8 +15,9 @@ export class TwoTabs extends PIXI.Container {
     main: Main;
     buttonDown: boolean;
     isButtonAvailable: boolean;
+    nextLevel: NextLevel;
 
-    constructor(app: PIXI.Application, main: Main) {
+    constructor(app: PIXI.Application, main: Main, nextLevel: NextLevel) {
         super();
 
         this.app = app;
@@ -24,6 +26,8 @@ export class TwoTabs extends PIXI.Container {
 
         this.app.stage.addChild(this);
         this.main = main;
+
+        this.nextLevel = nextLevel;
 
         this.buttonDown = false;
         this.isButtonAvailable = false;
@@ -127,6 +131,7 @@ export class TwoTabs extends PIXI.Container {
 
         this.visible = true;
 
+
         gsap.fromTo(this.overlay, {alpha: 0}, {alpha: 0.5, duration: 0.6});
 
         const tl = gsap.timeline({
@@ -149,10 +154,31 @@ export class TwoTabs extends PIXI.Container {
             onComplete: () => {
                 this.modal.alpha = 0;
                 this.visible = false;
+
+                this.updateLevel();
             }
         });
 
         tl
             .fromTo(this.modal, {y: 0}, {y: -1500, duration: 0.6, ease: "back.in"})
+    }
+
+    updateLevel() {
+
+        const savedState = localStorage.getItem('gameState');
+
+        if(savedState) {
+
+            const data = JSON.parse(savedState)
+
+            GAME_STATE.level = data.level;
+            GAME_STATE.words = data.words;
+
+            this.nextLevel.CURRENT_LEVEL = data.level;
+            this.main.CURRENT_LEVEL = data.level;
+
+            this.main.deleteLevel();
+            this.main.addLevel();
+        }
     }
 }

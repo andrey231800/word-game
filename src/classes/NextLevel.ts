@@ -103,14 +103,21 @@ export class NextLevel extends PIXI.Container {
         this.topText.text = `Уровень ${this.CURRENT_LEVEL - 1} пройден`;
     }
 
-    show() {
+    show(wrapper: PIXI.Container | null) {
         this.visible = true;
         gsap.fromTo(this, {alpha: 0}, {alpha: 1, duration: 0.2});
+
+        if(wrapper) {
+            wrapper.visible = false;
+            wrapper.destroy()
+        }
 
         this.CURRENT_LEVEL++;
 
         GAME_STATE.words = [];
         GAME_STATE.level = this.CURRENT_LEVEL;
+
+        this.app.stage.addChild(this);
 
         if(this.CURRENT_LEVEL >= this.MAX_LEVEL + 1) {
             this.setTopText();

@@ -67,8 +67,8 @@ export class Words extends PIXI.Container {
         this.y = -423;
 
         if(this.words.length >= 8) {
-            this.y = -558 + 50;
-            this.scale.set(0.85);
+            this.y = -558 + 80;
+            this.scale.set(0.8);
         }
 
         this.createWords();
@@ -127,7 +127,7 @@ export class Words extends PIXI.Container {
             setTimeout(() => {
                 this.WRAPPER.visible = false;
                 this.WRAPPER.destroy();
-                this.NextLevel.show();
+                this.NextLevel.show(this.WRAPPER);
             }, 300)
         }
     }
