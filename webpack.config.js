@@ -16,15 +16,7 @@ module.exports = {
                 test: /\.ts$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
-            },
-            {
-                test: /\.(png|jpe?g|gif|svg)$/,
-                type: 'asset', // Использовать тип asset для изображений
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,
-                type: 'asset/resource', // Использовать тип asset/resource для шрифтов
-            },
+            }
         ],
     },
     resolve: {
