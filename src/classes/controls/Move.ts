@@ -158,7 +158,7 @@ export class Move {
 
     findNearestLetter(pointerData: InteractionData) {
         const mousePos = pointerData.global;
-        const stopDist = 50;
+        const stopDist = 25;
 
         for (let i = 0; i < this.letters.children.length; i++) {
             const letter = this.letters.getChildAt(i);

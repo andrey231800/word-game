@@ -157,7 +157,7 @@ export class Main {
         const canvasWidth = window.innerWidth;
         const canvasHeight = window.innerHeight;
 
-        const gameWidth = 800;
+        const gameWidth = 600;
         const gameHeight = 1300;
 
         const scaleX = canvasWidth / gameWidth;
