@@ -1,8 +1,10 @@
 import * as PIXI from 'pixi.js';
 import { Circle } from './classes/controls/Circle';
 import { NextLevel } from './classes/NextLevel';
-import { IState } from './interfaces/IState';
+import { IState } from './types/IState';
 import { TwoTabs } from './classes/TwoTabs';
+import { getLevelFromJSON, pickLettersFromTheWords } from './utils/getLevelFromJSON';
+import { LevelData } from './types/LevelData';
 // import FontFaceObserver from 'fontfaceobserver';
 const FontFaceObserver = require('fontfaceobserver');
 
@@ -21,6 +23,7 @@ export class Main {
     twoTabs: TwoTabs | null;
     nextLevel: NextLevel | null;
     currentCircle: Circle | null;
+    levelsData: LevelData[];
 
     constructor() {
         this.app = new PIXI.Application({
@@ -31,6 +34,8 @@ export class Main {
             antialias: true,
             // resolution: window.devicePixelRatio || 1
         });
+
+        this.levelsData = [];
 
         // console.log(window.devicePixelRatio);
 
@@ -72,6 +77,7 @@ export class Main {
         this.resizeStage();
         this.recalculateStagePivot();
 
+        await this.loadLevels();
         await this.loadAssets();
 
         (globalThis as any).__PIXI_APP__ = this.app;
@@ -181,11 +187,23 @@ export class Main {
 
     private recalculateStagePivot() {
 
-        // const scaleFactor = window.devicePixelRatio || 1;
-        //
-        // this.app.stage.scale.set(scaleFactor, scaleFactor);
-
         this.app.stage.pivot.set(-this.app.renderer.width / 2 /this.app.stage.scale.x, -this.app.renderer.height / 2/this.app.stage.scale.y)
+    }
+
+    private async loadLevels() {
+
+
+        for (let i = 1; i <= this.MAX_LEVEL ; i++) {
+            const data = await getLevelFromJSON(i);
+
+            if(data) {
+                const levelWords = pickLettersFromTheWords(data)
+
+                this.levelsData.push(levelWords);
+            }
+
+        }
+
     }
 
     private loadAssets() {
@@ -233,7 +251,7 @@ export class Main {
     buildLayout() {
        // circleControls.WRAPPER.visible = false;
 
-        this.nextLevel = new NextLevel(this.app, this.MAX_LEVEL, this.CURRENT_LEVEL);
+        this.nextLevel = new NextLevel(this.app, this.MAX_LEVEL, this.CURRENT_LEVEL, this);
 
         this.addLevel();
 
@@ -248,7 +266,7 @@ export class Main {
     }
 
     addLevel() {
-        if(this.nextLevel) this.currentCircle = new Circle(this.app, this.nextLevel, this.CURRENT_LEVEL);
+        if(this.nextLevel) this.currentCircle = new Circle(this.app, this.nextLevel, this.CURRENT_LEVEL, this);
     }
 
     start() {

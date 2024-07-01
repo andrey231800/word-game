@@ -7,7 +7,7 @@ import { PixiPlugin } from 'gsap/PixiPlugin';
 import { Text } from 'pixi.js';
 import Timeline = gsap.core.Timeline;
 import { updatePivot } from '../../utils/updatePivot';
-import { IColors } from '../../interfaces/Color';
+import { IColors } from '../../types/Color';
 
 export class LettersPreview extends PIXI.Container {
 

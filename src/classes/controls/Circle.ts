@@ -5,7 +5,7 @@ import { getLevelFromJSON } from '../../utils/getLevelFromJSON';
 import { Move } from './Move';
 import { Words } from '../words/Words';
 import { NextLevel } from '../NextLevel';
-import { GAME_STATE } from '../../Main';
+import { GAME_STATE, Main } from '../../Main';
 
 interface WordsObject {
     words: string[];
@@ -21,8 +21,9 @@ export class Circle extends Container {
     WordsContainer: Words | null;
     WRAPPER: PIXI.Container;
     NextLevel: NextLevel;
+    main: Main
 
-    constructor(app: Application, NextLevel: NextLevel, level: number = 1) {
+    constructor(app: Application, NextLevel: NextLevel, level: number = 1, main: Main) {
         super();
 
         this.app = app;
@@ -33,6 +34,7 @@ export class Circle extends Container {
         this.WRAPPER.addChild(this);
 
         this.NextLevel = NextLevel;
+        this.main = main;
 
         this.WordsContainer = null;
 
@@ -50,67 +52,25 @@ export class Circle extends Container {
         const circleImage = new PIXI.Sprite(PIXI.Texture.from('circle-frame.png'));
         circleImage.anchor.set(0.5);
 
+        this.y = 300;
+
         this.addChild(circleImage);
         this.addChild(this.letters);
 
-        this.getLevel();
+        const levelsData = this.main.levelsData[this.CURRENT_LEVEL-1];
 
-        this.y = 300;
+        if(levelsData) {
+            this.levelWords = levelsData.words;
+            this.lettersVariants = levelsData.variants;
+        }
+
+
+        this.build();
+
+        // this.getLevel();
 
         // this.createLetters();
 
-        // Handle update
-        // app.ticker.add(this.update);
-    }
-
-    pickLettersFromTheWords() {
-
-        for (let i = 0; i < this.levelWords.length; i++) {
-            const splitWord = this.levelWords[i].split('');
-
-            for (let j = 0; j < splitWord.length; j++) {
-                const letter = splitWord[j];
-
-                if(this.lettersVariants.indexOf(letter) === -1) this.lettersVariants.push(letter.toString());
-            }
-
-        }
-
-
-        for (let i = 0; i < this.levelWords.length; i++) {
-
-            let splitWord = this.levelWords[i].split('');
-
-            let arr1 = [...splitWord];
-            let arr2 = [...this.lettersVariants];
-
-            let unpaired: string[] = [];
-
-            for (let letter of arr1) {
-
-                let index = arr2.indexOf(letter);
-
-                if (index !== -1) {
-
-                    arr2.splice(index, 1);
-
-                } else {
-
-                    unpaired.push(letter);
-
-                }
-
-            }
-
-            for (let k = 0; k < unpaired.length; k++) {
-
-                this.lettersVariants.push(unpaired[k]);
-
-            }
-
-        }
-
-        this.lettersVariants = this.lettersVariants.map(letter => letter.toUpperCase());
     }
 
     createLetters() {
@@ -140,21 +100,6 @@ export class Circle extends Container {
 
     }
 
-    async getLevel() {
-
-        try {
-            const words= await getLevelFromJSON(this.CURRENT_LEVEL);
-
-            this.levelWords = words.words;
-
-        } catch (e) {
-            if(e instanceof Error) throw e;
-        }
-
-        this.build();
-
-    }
-
     private build() {
 
         this.WordsContainer = new Words(this.WRAPPER, this.levelWords, this.CURRENT_LEVEL, this.NextLevel);
@@ -168,12 +113,13 @@ export class Circle extends Container {
             Circle: this
         });
 
-        this.pickLettersFromTheWords();
+        // this.pickLettersFromTheWords();
         this.createLetters();
 
         this.app.stage.addChild(this.move.linesCon);
 
         if(this.levelWords.length >= 8) {
+
             this.y = 377 + 20;
             this.scale.set(0.9);
         }

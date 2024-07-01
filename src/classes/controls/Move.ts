@@ -8,7 +8,7 @@ import { LettersPreview } from './LettersPreview';
 import { gsap } from "gsap";
 import { Words } from '../words/Words';
 import { Circle } from './Circle';
-import { IMove } from '../../interfaces/IMove';
+import { IMove } from '../../types/IMove';
 import { GAME_STATE } from '../../Main';
 
 export class Move {

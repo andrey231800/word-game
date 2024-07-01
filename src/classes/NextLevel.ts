@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { gsap } from 'gsap';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import { Circle } from './controls/Circle';
-import { GAME_STATE } from '../Main';
+import { GAME_STATE, Main } from '../Main';
 
 export class NextLevel extends PIXI.Container {
 
@@ -15,13 +15,16 @@ export class NextLevel extends PIXI.Container {
     topText: PIXI.Text;
     buttonDown: boolean;
     isButtonAvailable: boolean;
+    main: Main;
 
-    constructor(app: PIXI.Application, MAX_LEVEL: number, CURRENT_LEVEL: number) {
+    constructor(app: PIXI.Application, MAX_LEVEL: number, CURRENT_LEVEL: number, main: Main) {
         super();
 
         this.app = app;
         this.CURRENT_LEVEL = CURRENT_LEVEL;
         this.MAX_LEVEL = MAX_LEVEL;
+
+        this.main = main;
 
         this.isButtonAvailable = false;
         this.alpha = 0;
@@ -135,7 +138,7 @@ export class NextLevel extends PIXI.Container {
 
         setTimeout(() => {
             this.visible = false;
-            new Circle(this.app, this, this.CURRENT_LEVEL);
+            new Circle(this.app, this, this.CURRENT_LEVEL, this.main);
         }, 300);
 
     }
