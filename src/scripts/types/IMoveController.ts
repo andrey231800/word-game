@@ -1,12 +1,11 @@
 import PIXI from 'pixi.js';
-import { Words } from '../classes/words/Words';
-import { Circle } from '../classes/controls/Circle';
+import { Words } from '../game/Words';
+import { Circle } from '../game/Circle';
 
-export interface IMove {
+export interface IMoveController {
     WRAPPER: PIXI.Container,
     letters: PIXI.Container,
     correctWords: string[],
     WordsContainer: Words | null,
-    app: PIXI.Application,
     Circle: Circle
 }

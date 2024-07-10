@@ -2,18 +2,16 @@ import * as PIXI from 'pixi.js';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import InteractionData = PIXI.interaction.InteractionData;
 import { Letter } from './Letter';
-import { getDistance } from '../../utils/getDistance';
+import { getDistance } from '../utils/getDistance';
 import { Graphics } from 'pixi.js';
 import { LettersPreview } from './LettersPreview';
-import { gsap } from "gsap";
-import { Words } from '../words/Words';
+import { Words } from './Words';
 import { Circle } from './Circle';
-import { IMove } from '../../types/IMove';
-import { GAME_STATE } from '../../Main';
+import { IMoveController } from '../types/IMoveController';
+import { App } from '../system/App';
 
-export class Move {
+export class MoveController {
 
-    private app: PIXI.Application;
     public dragging: boolean;
     public dragData: InteractionData | null;
     linesCon: PIXI.Container;
@@ -30,10 +28,7 @@ export class Move {
     WRAPPER: PIXI.Container;
     Circle: Circle;
 
-    constructor(options: IMove) {
-
-
-        this.app = options.app;
+    constructor(options: IMoveController) {
 
         this.WRAPPER = options.WRAPPER;
 
@@ -62,29 +57,22 @@ export class Move {
 
         this.collectedWords = [];
 
-        if(GAME_STATE.words.length) {
-            this.collectedWords = [...GAME_STATE.words];
-            // GAME_STATE.words = [];
+        if(App.State.words.length) {
+            this.collectedWords = [...App.State.words];
         }
-
-        // console.log(this.collectedWords);
 
         this.lettersPreview = new LettersPreview(this.WRAPPER, this);
 
         this.addEvents();
 
-        // this.createLine();
-
     }
 
     addEvents() {
 
-        this.app.stage.on('pointermove', (e: InteractionEvent) => {
+        App.Stage.on('pointermove', (e: InteractionEvent) => {
             if (this.dragging && this.dragData) {
 
                 this.dragData = e.data;
-
-                // const pos = this.dragData.getLocalPosition(this.line.parent);
 
                 this.updateLine(e.data);
                 if(this.curLetter) this.findNearestLetter(e.data);
@@ -92,9 +80,8 @@ export class Move {
             }
         });
 
-        this.app.stage.on('pointerup', () => {
+        App.Stage.on('pointerup', () => {
             if(this.dragging) {
-                // console.log('Drag ended');
                 this.dragging = false;
                 this.dragData = null;
 
@@ -102,7 +89,7 @@ export class Move {
             }
         });
 
-        this.app.stage.on('pointerupoutside', () => {
+        App.Stage.on('pointerupoutside', () => {
             if(this.dragging) {
                 this.dragging = false;
                 this.dragData = null;
@@ -165,14 +152,11 @@ export class Move {
 
             if(letter instanceof Letter) {
 
-                // if(letter === this.curLetter || (letter !== this.prevLetter && letter.isPicked)) continue
-
                 const letterPos = letter.toGlobal(new PIXI.Point(0, 0));
 
                 const dist = getDistance(letterPos, mousePos);
 
                 if(dist <= stopDist) {
-                    // console.log(dist);
 
                     if(this.pickedLetters.length > 1) {
 
@@ -228,7 +212,6 @@ export class Move {
             this.linesCon.removeChildAt(this.linesCon.children.length-1)
 
             letter.setCurLetter(true);
-            // this.pickedLetters.pop();
         }
 
     }
@@ -252,7 +235,7 @@ export class Move {
                 this.collectedWords.push(pickedWord);
                 this.lettersPreview.correct();
 
-                GAME_STATE.words.push(pickedWord);
+                App.State.words.push(pickedWord);
 
                 if(this.WordsContainer) this.WordsContainer.correct(pickedWord);
 

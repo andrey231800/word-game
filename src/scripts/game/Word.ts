@@ -1,8 +1,7 @@
 import * as PIXI from 'pixi.js'
 import { SquareLetter } from './SquareLetter';
-import { updatePivot } from '../../utils/updatePivot';
+import { updatePivot } from '../utils/updatePivot';
 import { Container } from 'pixi.js';
-import { GAME_STATE } from '../../Main';
 
 export class Word extends PIXI.Container {
 

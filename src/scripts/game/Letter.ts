@@ -1,32 +1,27 @@
 import * as PIXI from 'pixi.js';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import InteractionData = PIXI.interaction.InteractionData;
-import { Move } from './Move';
+import { MoveController } from './MoveController';
 import { gsap } from "gsap";
 
 export class Letter extends PIXI.Container {
 
     text: PIXI.Text;
     readonly textContent: string
-    private activeFrame: PIXI.Sprite;
-    private inactiveFrame: PIXI.Sprite;
-    private move: Move;
-    // private dragging: boolean;
-    // private dragData: InteractionData | null;
-    private app: PIXI.Application;
+    readonly activeFrame: PIXI.Sprite;
+    readonly inactiveFrame: PIXI.Sprite;
+    private moveController: MoveController;
     isPicked: boolean;
     activeTextColor: string;
     inactiveTextColor: string;
     id: number;
 
-    constructor(app: PIXI.Application, textContent: string, move: Move, id: number) {
+    constructor(textContent: string, move: MoveController, id: number) {
         super();
 
         this.textContent = textContent;
 
-        this.app = app;
-
-        this.move = move;
+        this.moveController = move;
 
         this.isPicked = false;
         this.id = id;
@@ -56,18 +51,15 @@ export class Letter extends PIXI.Container {
         this.interactive = true;
         this.buttonMode = true;
 
-        // this.dragging = false;
-        // this.dragData = null;
-
         this.setEvents();
     }
 
     private setEvents() {
         this.on('pointerdown', (e: InteractionEvent) => {
-            if(!this.move.dragging && !this.isPicked) {
+            if(!this.moveController.dragging && !this.isPicked) {
                 // console.log('Drag started');
-                this.move.dragging = true;
-                this.move.dragData = e.data;
+                this.moveController.dragging = true;
+                this.moveController.dragData = e.data;
 
                 this.setCurLetter()
             }
@@ -76,22 +68,22 @@ export class Letter extends PIXI.Container {
 
     setCurLetter(isRemove: boolean = false) {
 
-        if(this.move.lettersPreview.animation) {
-            this.move.lettersPreview.stopAnimation();
-            this.move.lettersPreview.clearLetters();
+        if(this.moveController.lettersPreview.animation) {
+            this.moveController.lettersPreview.stopAnimation();
+            this.moveController.lettersPreview.clearLetters();
         }
 
-        this.move.createLine();
+        this.moveController.createLine();
 
         this.setActiveFrame();
 
-        this.move.startPoint = this.move.linesCon.toLocal(this.toGlobal(new PIXI.Point(0, 0)));
-        this.move.curLetter = this;
+        this.moveController.startPoint = this.moveController.linesCon.toLocal(this.toGlobal(new PIXI.Point(0, 0)));
+        this.moveController.curLetter = this;
         this.isPicked = true;
 
-        if(!isRemove) this.move.pickedLetters.push(this);
+        if(!isRemove) this.moveController.pickedLetters.push(this);
 
-        this.move.lettersPreview.createLetters();
+        this.moveController.lettersPreview.createLetters();
     }
 
     setActiveFrame() {

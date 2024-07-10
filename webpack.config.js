@@ -5,7 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
     // Basic configuration
-    entry: './src/index.ts',
+    entry: './src/scripts/index.ts',
     // Necessary in order to use source maps and debug directly TypeScript files
     devtool: 'source-map',
     mode: 'production',
@@ -42,7 +42,7 @@ module.exports = {
         // Do not accumulate files in ./dist
         new CleanWebpackPlugin(),
         // Copy assets to serve them
-        new CopyPlugin([{ from: 'assets', to: 'assets' }]),
+        new CopyPlugin([{ from: 'src/assets', to: 'src/assets' }]),
     ],
     devServer: {
         // webpack-dev-server configuration

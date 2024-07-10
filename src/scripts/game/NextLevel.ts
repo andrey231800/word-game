@@ -1,12 +1,14 @@
 import * as PIXI from 'pixi.js';
 import { gsap } from 'gsap';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
-import { Circle } from './controls/Circle';
-import { GAME_STATE, Main } from '../Main';
+import { Circle } from './Circle';
+import { IApp } from '../types/IApp';
+import { App } from '../system/App';
+
+//Screen for transfer to the next level
 
 export class NextLevel extends PIXI.Container {
 
-    app: PIXI.Application;
     CURRENT_LEVEL: number;
     MAX_LEVEL: number;
     button: PIXI.Container;
@@ -15,22 +17,18 @@ export class NextLevel extends PIXI.Container {
     topText: PIXI.Text;
     buttonDown: boolean;
     isButtonAvailable: boolean;
-    main: Main;
 
-    constructor(app: PIXI.Application, MAX_LEVEL: number, CURRENT_LEVEL: number, main: Main) {
+    constructor() {
         super();
 
-        this.app = app;
-        this.CURRENT_LEVEL = CURRENT_LEVEL;
-        this.MAX_LEVEL = MAX_LEVEL;
-
-        this.main = main;
+        this.CURRENT_LEVEL = App.CURRENT_LEVEL;
+        this.MAX_LEVEL = App.MAX_LEVEL;
 
         this.isButtonAvailable = false;
         this.alpha = 0;
         this.visible = false;
 
-        this.app.stage.addChild(this);
+        App.Stage.addChild(this);
 
         this.buttonDown = false;
 
@@ -83,7 +81,7 @@ export class NextLevel extends PIXI.Container {
             }
         });
 
-        this.app.renderer.plugins.interaction.on('pointerup', () => {
+        App.Renderer.plugins.interaction.on('pointerup', () => {
             if(this.buttonDown) {
                 this.buttonDown = false;
 
@@ -110,17 +108,14 @@ export class NextLevel extends PIXI.Container {
         this.visible = true;
         gsap.fromTo(this, {alpha: 0}, {alpha: 1, duration: 0.2});
 
-        if(wrapper) {
-            wrapper.visible = false;
-            wrapper.destroy()
-        }
+        App.Game.deleteScene();
 
         this.CURRENT_LEVEL++;
 
-        GAME_STATE.words = [];
-        GAME_STATE.level = this.CURRENT_LEVEL;
+        App.State.words = [];
+        App.State.level = this.CURRENT_LEVEL;
 
-        this.app.stage.addChild(this);
+        App.Stage.addChild(this);
 
         if(this.CURRENT_LEVEL >= this.MAX_LEVEL + 1) {
             this.setTopText();
@@ -138,7 +133,9 @@ export class NextLevel extends PIXI.Container {
 
         setTimeout(() => {
             this.visible = false;
-            new Circle(this.app, this, this.CURRENT_LEVEL, this.main);
+            // new Circle(this, this.CURRENT_LEVEL);
+
+            App.Game.addScene(this.CURRENT_LEVEL);
         }, 300);
 
     }

@@ -1,27 +1,26 @@
 import * as PIXI from 'pixi.js';
 import { Letter } from './Letter';
-import { Move } from './Move';
+import { MoveController } from './MoveController';
 import { Circle } from './Circle';
 import { gsap as gsapLibrary } from "gsap";
 import { PixiPlugin } from 'gsap/PixiPlugin';
 import { Text } from 'pixi.js';
 import Timeline = gsap.core.Timeline;
-import { updatePivot } from '../../utils/updatePivot';
-import { IColors } from '../../types/Color';
+import { updatePivot } from '../utils/updatePivot';
+import { IColors } from '../types/Color';
 
 export class LettersPreview extends PIXI.Container {
 
     // app: PIXI.Application;
     pickedLetters: Letter[];
-    move: Move;
+    move: MoveController;
     color: IColors;
     animation: Timeline | null;
     WRAPPER: PIXI.Container;
 
-    constructor(WRAPPER: PIXI.Container, move: Move) {
+    constructor(WRAPPER: PIXI.Container, move: MoveController) {
         super();
 
-        // this.app = app;
         this.WRAPPER = WRAPPER
 
         this.animation = null;

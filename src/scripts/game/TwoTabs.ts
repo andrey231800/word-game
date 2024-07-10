@@ -1,33 +1,31 @@
 import * as PIXI from 'pixi.js';
 import { gsap } from 'gsap';
-import { Texture } from 'pixi.js';
-import { Back } from 'gsap/gsap-core';
-import { GAME_STATE, Main } from '../Main';
+
+import {  App } from '../system/App';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import { NextLevel } from './NextLevel';
+import { Game } from './Game';
+import { IApp } from '../types/IApp';
+
+// this is the class for the screen that will appear if 2 or more tabs are opened with the game in the browser
+// clicking on the button uploads the current state of the game and this tab becomes active, and the remaining open are not active
 
 export class TwoTabs extends PIXI.Container {
 
-    app: PIXI.Application;
     overlay: PIXI.Graphics;
     modal: PIXI.Container;
     button: PIXI.Sprite;
-    main: Main;
     buttonDown: boolean;
     isButtonAvailable: boolean;
-    nextLevel: NextLevel;
 
-    constructor(app: PIXI.Application, main: Main, nextLevel: NextLevel) {
+    constructor() {
         super();
-
-        this.app = app;
 
         this.visible = false;
 
-        this.app.stage.addChild(this);
-        this.main = main;
+        App.Stage.addChild(this);
 
-        this.nextLevel = nextLevel;
+        // this.nextLevel = nextLevel;
 
         this.buttonDown = false;
         this.isButtonAvailable = false;
@@ -112,13 +110,13 @@ export class TwoTabs extends PIXI.Container {
             }
         });
 
-        this.app.renderer.plugins.interaction.on('pointerup', () => {
+        App.Renderer.plugins.interaction.on('pointerup', () => {
             if(this.buttonDown) {
                 this.buttonDown = false;
 
                 this.hide();
 
-                this.main.setPageOpenStatus(true)
+                App.localStorageManager.setPageOpenStatus(true)
 
                 gsap.to(this.button.scale, {x: 1, y: 1, duration: 0.1})
             }
@@ -127,7 +125,7 @@ export class TwoTabs extends PIXI.Container {
 
     show() {
 
-        this.app.stage.addChild(this);
+        App.Stage.addChild(this);
 
         this.visible = true;
 
@@ -171,14 +169,19 @@ export class TwoTabs extends PIXI.Container {
 
             const data = JSON.parse(savedState)
 
-            GAME_STATE.level = data.level;
-            GAME_STATE.words = data.words;
+            App.State.level = data.level;
+            App.State.words = data.words;
 
-            this.nextLevel.CURRENT_LEVEL = data.level;
-            this.main.CURRENT_LEVEL = data.level;
+            if(App.Game.nextLevel) {
+                App.Game.nextLevel.CURRENT_LEVEL = data.level;
+            }
 
-            this.main.deleteLevel();
-            this.main.addLevel();
+            App.CURRENT_LEVEL = data.level;
+
+            App.Game.deleteScene();
+            App.Game.addScene(App.CURRENT_LEVEL);
         }
     }
 }
+
+// export const TwoTabs = new TT();

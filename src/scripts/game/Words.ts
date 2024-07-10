@@ -1,11 +1,8 @@
 import * as PIXI from 'pixi.js'
-import { SquareLetter } from './SquareLetter';
-import { updatePivot } from '../../utils/updatePivot';
-import { Container, Text } from 'pixi.js';
+import { Text } from 'pixi.js';
 import { Word } from './Word';
-import W = PIXI.groupD8.W;
-import { NextLevel } from '../NextLevel';
-import { GAME_STATE } from '../../Main';
+import { NextLevel } from './NextLevel';
+import { App } from '../system/App';
 
 export class Words extends PIXI.Container {
 
@@ -14,20 +11,19 @@ export class Words extends PIXI.Container {
     step: {x: number, y: number}
     CURRENT_LEVEL: number;
     WRAPPER: PIXI.Container;
-    NextLevel: NextLevel;
+    NextLevel: NextLevel | null;
     COLLECTED_WORDS: string[];
 
-    constructor(WRAPPER: PIXI.Container, words: string[], CURRENT_LEVEL: number, NextLevel: NextLevel) {
+    constructor(WRAPPER: PIXI.Container, words: string[], CURRENT_LEVEL: number) {
         super();
 
-        // this.app = app;
         this.words = words;
 
         this.WRAPPER = WRAPPER;
 
         this.CURRENT_LEVEL = CURRENT_LEVEL;
 
-        this.NextLevel = NextLevel;
+        this.NextLevel = App.Game.nextLevel;
 
         this.step = {
             x: 78,
@@ -36,11 +32,9 @@ export class Words extends PIXI.Container {
 
         this.COLLECTED_WORDS = [];
 
-        if(GAME_STATE.words.length) {
-            this.COLLECTED_WORDS = [...GAME_STATE.words];
+        if(App.State.words.length) {
+            this.COLLECTED_WORDS = [...App.State.words];
         }
-
-        // console.log(this.COLLECTED_WORDS);
 
         const levelText = new Text(`Уровень ${this.CURRENT_LEVEL}`, {
             fontFamily: 'Vag-World',
@@ -52,10 +46,6 @@ export class Words extends PIXI.Container {
         this.addChild(levelText);
 
         this.build();
-
-        // this.levelText.anchor.set(0.5);
-
-        // this.addChild(this.levelText);
 
 
     }
@@ -109,6 +99,7 @@ export class Words extends PIXI.Container {
     }
 
     getWordCon(word: string) {
+
         for (let i = 0; i < this.children.length; i++) {
             const wordCon = this.getChildAt(i);
 
@@ -117,9 +108,6 @@ export class Words extends PIXI.Container {
             }
         }
 
-        // if(this.getChildAt(0) instanceof Word) return this.getChildAt(0);
-
-
     }
 
     checkIfAllWordsCollect() {
@@ -127,7 +115,7 @@ export class Words extends PIXI.Container {
             setTimeout(() => {
                 this.WRAPPER.visible = false;
                 this.WRAPPER.destroy();
-                this.NextLevel.show(this.WRAPPER);
+                if(this.NextLevel) this.NextLevel.show(this.WRAPPER);
             }, 300)
         }
     }

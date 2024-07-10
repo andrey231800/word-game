@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
-import { IColors } from '../../types/Color';
 import { gsap } from 'gsap';
+import { IColors } from '../types/Color';
 
 export class SquareLetter extends PIXI.Container {
 
