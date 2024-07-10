@@ -1,5 +1,3 @@
-## Word Game
+# Word Game
 
-# Demo
-
-https://word-game-new.netlify.app/
+## Demo: https://word-game-new.netlify.app/
